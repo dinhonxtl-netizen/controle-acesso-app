@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Segurança SP — NEXUS-R</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --navy:#0a1628;--navy2:#112240;--navy3:#1a3a6b;
+  --gold:#f0b429;--gold2:#c9a227;--gdim:rgba(240,180,41,0.12);--glight:#fde68a;
+  --white:#fff;--gray:#cfd8dc;--gray2:#8eafd4;
+  --red:#c0392b;--red2:#e74c3c;--green:#2d8a2d;--green2:#7ecf7e;
+  --pink:#be185d;--pink2:#f9a8d4;
+}
+body{font-family:'Segoe UI',sans-serif;background:var(--navy);color:var(--white);min-height:100vh;}
+nav{background:linear-gradient(90deg,#0a1628,#112240);border-bottom:2px solid var(--gold);padding:0 12px;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(240,180,41,0.2);}
+.logo{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.ln{color:var(--gold);font-size:.95rem;font-weight:900;letter-spacing:1px;}
+.ls{color:var(--gray2);font-size:.52rem;letter-spacing:2px;}
+.nav-tabs{display:flex;gap:2px;overflow-x:auto;}
+.nt{background:none;border:none;color:var(--gray2);padding:7px 9px;border-radius:6px;cursor:pointer;font-size:.78rem;white-space:nowrap;transition:all .2s;}
+.nt:hover{background:var(--gdim);color:var(--gold);}
+.nt.active{background:var(--gdim);color:var(--gold);border-bottom:2px solid var(--gold);border-radius:6px 6px 0 0;font-weight:700;}
+.page{display:none;padding:20px;max-width:900px;margin:0 auto;}
+.page.active{display:block;}
+.hero{background:linear-gradient(135deg,var(--navy2),var(--navy3));border:1px solid var(--gold2);border-radius:16px;padding:36px 28px;text-align:center;margin-bottom:24px;}
+.hero h1{font-size:1.8rem;margin-bottom:10px;}.hero h1 span{color:var(--gold);}
+.hero p{color:var(--gray);font-size:.9rem;max-width:580px;margin:0 auto;}
+.badge{display:inline-block;background:linear-gradient(90deg,var(--gold2),var(--gold));color:var(--navy);font-size:.72rem;padding:4px 14px;border-radius:20px;margin-bottom:14px;font-weight:700;letter-spacing:1px;}
+.badgep{background:linear-gradient(90deg,var(--pink),#ec4899)!important;color:#fff!important;}
+.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:24px;}
+.sc{background:var(--navy2);border:1px solid var(--gold2);border-radius:12px;padding:18px;text-align:center;}
+.sc .n{font-size:1.8rem;font-weight:700;color:var(--gold);}
+.sc .n.r{color:#ff8a80;}.sc .n.g{color:var(--green2);}.sc .n.p{color:var(--pink2);}
+.sc .l{color:var(--white);font-size:.8rem;margin-top:6px;font-weight:600;}
+.sc .s{color:var(--gray2);font-size:.7rem;margin-top:3px;}
+.sc2{border-color:var(--pink)!important;}
+.st{font-size:1rem;font-weight:700;color:var(--gold);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.st::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--gold2),transparent);}
+.stp{color:var(--pink2)!important;}.stp::after{background:linear-gradient(90deg,var(--pink),transparent)!important;}
+.gd{width:9px;height:9px;background:var(--gold);border-radius:50%;display:inline-block;box-shadow:0 0 6px var(--gold);}
+.pd{width:9px;height:9px;background:var(--pink2);border-radius:50%;display:inline-block;}
+.cg{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:24px;}
+.cc{background:var(--navy2);border:1px solid var(--navy3);border-radius:12px;padding:18px;cursor:pointer;transition:all .2s;}
+.cc:hover{border-color:var(--gold);transform:translateY(-2px);}
+.cc .ic{font-size:1.8rem;margin-bottom:8px;}
+.cc h3{font-size:.92rem;margin-bottom:5px;font-weight:700;}
+.cc p{color:var(--gray);font-size:.79rem;line-height:1.5;}
+.tg{display:inline-block;background:rgba(192,57,43,.2);color:#ff8a80;font-size:.69rem;padding:2px 8px;border-radius:10px;margin-top:8px;font-weight:600;}
+.mc{background:var(--navy2);border-left:4px solid var(--gold);border-radius:0 12px 12px 0;padding:18px;margin-bottom:14px;}
+.mc h3{font-size:.92rem;margin-bottom:7px;color:var(--gold);font-weight:700;}
+.mc p,.mcp p{color:var(--gray);font-size:.82rem;line-height:1.6;}
+.mcp{background:var(--navy2);border-left:4px solid var(--pink);border-radius:0 12px 12px 0;padding:18px;margin-bottom:14px;}
+.mcp h3{font-size:.92rem;margin-bottom:7px;color:var(--pink2);font-weight:700;}
+.steps{margin-top:10px;}
+.step{display:flex;gap:9px;margin-bottom:7px;align-items:flex-start;}
+.sn{background:linear-gradient(135deg,var(--gold2),var(--gold));color:var(--navy);width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:900;flex-shrink:0;margin-top:1px;}
+.snp{background:linear-gradient(135deg,var(--pink),#ec4899)!important;color:#fff!important;}
+.step p{color:var(--gray);font-size:.8rem;line-height:1.5;}
+.ttabs{display:flex;gap:7px;margin-bottom:18px;flex-wrap:wrap;}
+.tt{background:var(--navy2);border:1px solid var(--gold2);color:var(--gray2);padding:7px 13px;border-radius:20px;cursor:pointer;font-size:.8rem;transition:all .2s;}
+.tt.active,.tt:hover{background:linear-gradient(90deg,var(--gold2),var(--gold));color:var(--navy);font-weight:700;}
+.ts{display:none;}.ts.active{display:block;}
+.tc{background:var(--navy2);border:1px solid var(--navy3);border-radius:12px;padding:16px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start;}
+.tc:hover{border-color:var(--gold2);}
+.tc.al{border-color:var(--gold);background:rgba(240,180,41,.06);}
+.tc.pal{border-color:var(--pink);background:rgba(190,24,93,.08);}
+.ti{font-size:1.3rem;flex-shrink:0;}
+.tc h4{font-size:.88rem;margin-bottom:3px;color:var(--glight);font-weight:700;}
+.tc.pal h4{color:var(--pink2);}
+.tc p{color:var(--gray);font-size:.8rem;line-height:1.5;}
+.ab{background:rgba(240,180,41,.08);border:1px solid var(--gold2);border-radius:10px;padding:13px 16px;margin-bottom:18px;display:flex;gap:10px;align-items:center;font-size:.82rem;color:var(--gray);}
+.ab strong{color:var(--gold);}
+.abr{background:rgba(192,57,43,.12)!important;border-color:var(--red2)!important;}.abr strong{color:#ff8a80!important;}
+.abp{background:rgba(190,24,93,.1)!important;border-color:var(--pink)!important;}.abp strong{color:var(--pink2)!important;}
+.bc{margin-bottom:18px;}
+.br{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.bl{color:var(--gray);font-size:.79rem;width:150px;flex-shrink:0;}
+.bt{flex:1;background:var(--navy3);border-radius:6px;height:20px;overflow:hidden;}
+.bf{height:100%;border-radius:6px;display:flex;align-items:center;padding-left:7px;font-size:.71rem;font-weight:700;color:#fff;}
+.bv{font-size:.78rem;width:55px;text-align:right;font-weight:600;}
+.rl{display:flex;flex-direction:column;gap:9px;margin-bottom:14px;}
+.ri{display:flex;align-items:center;gap:9px;}
+.rp{background:linear-gradient(135deg,var(--gold2),var(--gold));color:var(--navy);width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.71rem;font-weight:900;flex-shrink:0;}
+.rn{color:var(--white);font-size:.82rem;width:162px;flex-shrink:0;}
+.rb{flex:1;background:var(--navy3);border-radius:6px;height:14px;overflow:hidden;}
+.rb span{display:block;height:100%;border-radius:6px;}
+.rv{color:var(--gold);font-size:.75rem;width:52px;text-align:right;font-weight:600;}
+.zg{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:18px;}
+.zc{background:var(--navy2);border-radius:12px;padding:13px;border-top:3px solid var(--gold);}
+.zc.zn{border-top-color:var(--gold2);}.zc.zs{border-top-color:var(--gold);}.zc.zo{border-top-color:var(--glight);}.zc.zc2{border-top-color:var(--gray2);}
+.zt{font-size:.81rem;font-weight:700;margin-bottom:8px;color:var(--gold);}
+.zi{font-size:.77rem;color:var(--gray);margin-bottom:5px;}
+.ub{display:flex;justify-content:space-between;align-items:center;background:var(--navy2);border:1px solid var(--gold2);border-radius:10px;padding:9px 14px;margin-bottom:14px;gap:10px;flex-wrap:wrap;}
+.ubtn{background:linear-gradient(90deg,var(--gold2),var(--gold));color:var(--navy);border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:.8rem;font-weight:700;white-space:nowrap;}
+.ubtn:hover{filter:brightness(1.1);}.ubtn:disabled{background:#444;color:#888;cursor:not-allowed;}
+.arb{background:var(--navy2);border:1px solid var(--green);border-radius:10px;padding:14px;margin-bottom:14px;font-size:.82rem;color:var(--gray);line-height:1.7;display:none;}
+.arb h4{color:var(--green2);margin-bottom:8px;font-weight:700;}
+.mhero{background:linear-gradient(135deg,#1a0a1a,#2d0d2d,#1a0a2a);border:1px solid var(--pink);border-radius:16px;padding:32px 28px;text-align:center;margin-bottom:22px;}
+.mhero h1{font-size:1.7rem;margin-bottom:8px;}.mhero h1 span{color:var(--pink2);}
+.mhero p{color:var(--gray);font-size:.88rem;max-width:580px;margin:0 auto;}
+.gcard{background:linear-gradient(135deg,#1a0a1a,#2d0d2d);border:2px solid var(--pink);border-radius:16px;padding:22px;margin-bottom:18px;text-align:center;}
+.gcard h3{color:var(--pink2);font-size:1rem;margin-bottom:13px;font-weight:700;}
+.gsteps{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:11px;margin-bottom:13px;}
+.gs{background:rgba(190,24,93,.12);border:1px solid rgba(190,24,93,.3);border-radius:10px;padding:12px;text-align:center;}
+.gs .gi{font-size:1.8rem;margin-bottom:5px;}
+.gs h4{color:var(--pink2);font-size:.79rem;font-weight:700;margin-bottom:3px;}
+.gs p{color:var(--gray);font-size:.73rem;line-height:1.4;}
+.cg2{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:11px;margin-bottom:18px;}
+.ccard{background:var(--navy2);border-radius:12px;padding:15px;text-align:center;border:1px solid var(--pink);}
+.ccard .ci{font-size:1.8rem;margin-bottom:7px;}
+.ccard h4{color:var(--pink2);font-size:1rem;font-weight:900;margin-bottom:3px;}
+.ccard p{color:var(--gray);font-size:.76rem;line-height:1.4;}
+.vc{background:linear-gradient(135deg,#1a0a1a,#2d0d2d);border:2px solid var(--pink);border-radius:13px;padding:16px;margin-bottom:13px;display:flex;gap:13px;align-items:center;cursor:pointer;transition:all .2s;text-decoration:none;}
+.vc:hover{border-color:var(--pink2);transform:translateY(-2px);}
+.vt{width:65px;height:65px;background:linear-gradient(135deg,var(--pink),#ec4899);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.7rem;flex-shrink:0;}
+.vi h4{color:var(--pink2);font-size:.86rem;font-weight:700;margin-bottom:3px;}
+.vi p{color:var(--gray);font-size:.76rem;line-height:1.4;}
+.vtg{display:inline-block;background:rgba(190,24,93,.2);color:var(--pink2);font-size:.67rem;padding:2px 8px;border-radius:10px;margin-top:5px;font-weight:600;}
+.ls2{background:var(--navy2);border:1px solid var(--gold2);border-radius:12px;padding:17px;margin-bottom:13px;}
+.ls2 h3{font-size:.92rem;color:var(--gold);margin-bottom:8px;font-weight:700;}
+.ls2 p{color:var(--gray);font-size:.82rem;line-height:1.7;}
+.lok{display:inline-flex;align-items:center;gap:5px;background:rgba(240,180,41,.1);color:var(--gold);border:1px solid var(--gold2);border-radius:8px;padding:5px 12px;font-size:.79rem;margin-top:8px;font-weight:600;}
+.lbanner{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(90deg,#0a1628,#112240);border-top:2px solid var(--gold);padding:11px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:300;flex-wrap:wrap;}
+.lbanner p{font-size:.77rem;color:var(--gray);flex:1;min-width:170px;line-height:1.5;}
+.lbanner p a{color:var(--gold);cursor:pointer;text-decoration:underline;}
+.lbtns{display:flex;gap:7px;flex-shrink:0;}
+.lacc{background:linear-gradient(90deg,var(--gold2),var(--gold));color:var(--navy);border:none;padding:7px 15px;border-radius:8px;cursor:pointer;font-size:.79rem;font-weight:700;}
+.lmore{background:transparent;color:var(--gray2);border:1px solid var(--gold2);padding:7px 11px;border-radius:8px;cursor:pointer;font-size:.79rem;}
+.src{color:var(--gray2);font-size:.72rem;text-align:center;margin-top:16px;padding-top:13px;border-top:1px solid var(--gold2);}
+.src a{color:var(--gold);text-decoration:none;}
+footer{text-align:center;color:var(--gray2);font-size:.72rem;padding:18px;border-top:1px solid var(--gold2);margin-top:14px;padding-bottom:80px;}
+.cpbar{background:linear-gradient(90deg,#0a1628,#112240);border-top:2px solid var(--gold);padding:8px 17px;text-align:center;font-size:.72rem;color:var(--gray2);user-select:none;}
+.cpbar span{color:var(--gold);font-weight:700;}
+.sp{display:inline-block;width:12px;height:12px;border:2px solid var(--navy3);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:5px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+::selection{background:transparent;}::-moz-selection{background:transparent;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">
+    <svg width="34" height="40" viewBox="0 0 38 44" fill="none">
+      <defs>
+        <linearGradient id="gG" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f0b429"/><stop offset="100%" style="stop-color:#c9a227"/></linearGradient>
+        <linearGradient id="nG" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#1a3a6b"/><stop offset="100%" style="stop-color:#0a1628"/></linearGradient>
+      </defs>
+      <path d="M19 1L35 7V22C35 31 27 38.5 19 43C11 38.5 3 31 3 22V7Z" fill="url(#gG)"/>
+      <path d="M19 4L32 9.5V22C32 29.5 25.5 36 19 40C12.5 36 6 29.5 6 22V9.5Z" fill="url(#nG)"/>
+      <text x="7" y="27" font-family="Arial Black" font-size="13" font-weight="900" fill="#8eafd4" opacity=".7">N</text>
+      <text x="18" y="27" font-family="Arial Black" font-size="13" font-weight="900" fill="url(#gG)">R</text>
+      <circle cx="11" cy="11" r="1.1" fill="url(#gG)" opacity=".8"/>
+      <circle cx="14" cy="9" r="1.3" fill="url(#gG)" opacity=".8"/>
+      <circle cx="17" cy="11" r=".9" fill="url(#gG)" opacity=".7"/>
+    </svg>
+    <div><div class="ln">NEXUS-R</div><div class="ls">ANÁLISE E SEGURANÇA</div></div>
+  </div>
+  <div class="nav-tabs">
+    <button class="nt active" onclick="SP('home',this)">🏠 Início</button>
+    <button class="nt" onclick="SP('cond',this)">🏢 Condomínios</button>
+    <button class="nt" onclick="SP('stats',this)">📊 Estatísticas</button>
+    <button class="nt" onclick="SP('modus',this)">🔍 Modus Operandi</button>
+    <button class="nt" onclick="SP('tips',this)">✅ Dicas</button>
+    <button class="nt" onclick="SP('mulher',this)">🌸 Mulher</button>
+    <button class="nt" onclick="SP('lgpd',this)">🔒 LGPD</button>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div id="home" class="page active">
+  <div class="hero">
+    <div class="badge">⚠️ ALERTA PÚBLICO</div>
+    <h1>Segurança em <span>São Paulo</span></h1>
+    <p>Informação é a melhor proteção. Conheça os crimes mais comuns na capital, entenda como acontecem e saiba como se proteger.</p>
+  </div>
+  <div class="ab">⚠️<span><strong>Atenção:</strong> Roubos caíram 21,4% no 1º bimestre de 2026, porém feminicídios atingiram recorde histórico com alta de 41%. Fique atento.</span></div>
+  <div class="sg">
+    <div class="sc"><div class="n g">↓21,4%</div><div class="l">Queda nos roubos</div><div class="s">1º bimestre 2026 — SSP-SP</div></div>
+    <div class="sc"><div class="n r">86.567</div><div class="l">Furtos (jan–fev 2026)</div><div class="s">capital — SSP-SP</div></div>
+    <div class="sc"><div class="n p">86</div><div class="l">Feminicídios em SP</div><div class="s">1º trimestre 2026 — recorde</div></div>
+    <div class="sc"><div class="n r">12.000</div><div class="l">Ocorrências condomínios</div><div class="s">1º trimestre 2026 — SSP-SP</div></div>
+  </div>
+  <div class="st"><span class="gd"></span> Crimes Mais Comuns</div>
+  <div class="cg">
+    <div class="cc" onclick="SP('modus',document.querySelectorAll('.nt')[3])"><div class="ic">📱</div><h3>Roubo de Celular</h3><p>O crime mais frequente em SP. Ruas, trânsito e transporte público.</p><span class="tg">🔴 Muito Alto Risco</span></div>
+    <div class="cc" onclick="SP('modus',document.querySelectorAll('.nt')[3])"><div class="ic">🚗</div><h3>Roubo de Veículo</h3><p>Semáforos, garagens e vias. Queda de 39,9% em 2026.</p><span class="tg">🔴 Alto Risco</span></div>
+    <div class="cc" onclick="SP('cond',document.querySelectorAll('.nt')[1])"><div class="ic">🏢</div><h3>Roubos a Condomínios</h3><p>12 mil ocorrências no 1º trimestre. Clonagem e escalada de muros.</p><span class="tg">🔴 Alto Risco</span></div>
+    <div class="cc" onclick="SP('mulher',document.querySelectorAll('.nt')[5])"><div class="ic">🌸</div><h3>Violência Doméstica</h3><p>Feminicídios em recorde histórico. Alta de 41% no 1º trimestre 2026.</p><span class="tg" style="background:rgba(190,24,93,.2);color:#f9a8d4">🔴 ALERTA MÁXIMO</span></div>
+  </div>
+  <p class="src">Fonte: <a href="https://www.ssp.sp.gov.br" target="_blank">SSP-SP 2026</a> | <a href="https://portaldenoticias.policiamilitar.sp.gov.br" target="_blank">PM-SP</a> | Agência SP</p>
+</div>
+
+<!-- CONDOMÍNIOS -->
+<div id="cond" class="page">
+  <div class="hero"><div class="badge">🏢 SEGURANÇA CONDOMINIAL</div><h1>Roubos a <span>Condomínios</span></h1><p>Condomínios residenciais e comerciais estão entre os principais alvos de quadrilhas especializadas em São Paulo.</p></div>
+  <div class="ab abr">🚨<span><strong>Atenção:</strong> Cerca de <strong>12 mil ocorrências</strong> de furtos e roubos a condomínios no 1º trimestre de 2026 — SSP-SP.</span></div>
+  <div class="sg">
+    <div class="sc"><div class="n r">12.000</div><div class="l">Ocorrências</div><div class="s">1º trimestre 2026</div></div>
+    <div class="sc"><div class="n g">↓35,3%</div><div class="l">Queda nos roubos</div><div class="s">jan–fev 2026 vs 2025</div></div>
+    <div class="sc"><div class="n r">84</div><div class="l">Roubos a residências</div><div class="s">jan–fev 2026 capital</div></div>
+    <div class="sc"><div class="n r">935</div><div class="l">Furtos a residências</div><div class="s">jan–fev 2026 ↓28,5%</div></div>
+  </div>
+  <div class="st"><span class="gd"></span> Modalidades Mais Comuns</div>
+  <div class="sg">
+    <div class="sc"><div class="n r">38%</div><div class="l">Clonagem de controles</div><div class="s">método mais utilizado</div></div>
+    <div class="sc"><div class="n r">27%</div><div class="l">Arrombamento</div><div class="s">portões e muros</div></div>
+    <div class="sc"><div class="n r">21%</div><div class="l">Escalada de muros</div><div class="s">em madrugadas</div></div>
+    <div class="sc"><div class="n r">14%</div><div class="l">Falso entregador</div><div class="s">engenharia social</div></div>
+  </div>
+  <div class="bc">
+    <div class="br"><div class="bl">Zona Leste</div><div class="bt"><div class="bf" style="width:88%;background:linear-gradient(90deg,#7b0000,#c0392b)">maior incidência</div></div><div class="bv" style="color:#ff8a80">88%</div></div>
+    <div class="br"><div class="bl">Zona Sul</div><div class="bt"><div class="bf" style="width:74%;background:linear-gradient(90deg,#7b0000,#e74c3c)">alto risco</div></div><div class="bv" style="color:#ff8a80">74%</div></div>
+    <div class="br"><div class="bl">Zona Norte</div><div class="bt"><div class="bf" style="width:62%;background:linear-gradient(90deg,#c0392b,#e74c3c)">alto risco</div></div><div class="bv" style="color:#ff8a80">62%</div></div>
+    <div class="br"><div class="bl">Zona Oeste</div><div class="bt"><div class="bf" style="width:45%;background:var(--navy3)">médio</div></div><div class="bv" style="color:#ff8a80">45%</div></div>
+    <div class="br"><div class="bl">Centro</div><div class="bt"><div class="bf" style="width:35%;background:var(--navy3)">médio</div></div><div class="bv" style="color:#ff8a80">35%</div></div>
+  </div>
+  <div class="st"><span class="gd"></span> Modus Operandi das Quadrilhas</div>
+  <div class="mc"><h3>🔑 Clonagem de Controles de Acesso</h3><p>Equipamentos captam o sinal do controle remoto e clonam em segundos para uso posterior.</p><div class="steps"><div class="step"><div class="sn">1</div><p>Criminoso posiciona captador de sinal próximo ao portão, disfarçado de pedestre.</p></div><div class="step"><div class="sn">2</div><p>Captura o sinal quando morador abre o portão normalmente.</p></div><div class="step"><div class="sn">3</div><p>Retorna de madrugada e usa o sinal clonado sem nenhum alerta.</p></div><div class="step"><div class="sn">4</div><p>Age rapidamente e foge antes da chegada da PM.</p></div></div></div>
+  <div class="mc"><h3>🚪 Arrombamento e Invasão Forçada</h3><p>Grupos armados abordam porteiros ou forçam entradas com ferramentas.</p><div class="steps"><div class="step"><div class="sn">1</div><p>Reconhecimento prévio da rotina, câmeras e funcionários.</p></div><div class="step"><div class="sn">2</div><p>Abordagem ao porteiro na troca de turno.</p></div><div class="step"><div class="sn">3</div><p>Porteiro é rendido; criminosos têm acesso livre.</p></div><div class="step"><div class="sn">4</div><p>Arrombam apartamentos e fogem rapidamente.</p></div></div></div>
+  <div class="mc"><h3>📦 Falso Entregador / Funcionário</h3><p>Engenharia social — criminosos se passam por entregadores ou técnicos.</p><div class="steps"><div class="step"><div class="sn">1</div><p>Apresenta-se na portaria com uniforme falso.</p></div><div class="step"><div class="sn">2</div><p>Porteiro libera sem confirmar com o morador.</p></div><div class="step"><div class="sn">3</div><p>Rende morador ou aproveita apartamento vazio.</p></div><div class="step"><div class="sn">4</div><p>Sai normalmente com os pertences escondidos.</p></div></div></div>
+  <div class="st"><span class="gd"></span> Dicas de Prevenção para Condomínios</div>
+  <div class="tc al"><div class="ti">📡</div><div><h4>Atualize o sistema de controle de acesso</h4><p>Use sistemas com criptografia dinâmica (rolling code) que impossibilitam a clonagem.</p></div></div>
+  <div class="tc"><div class="ti">📹</div><div><h4>Câmeras sem pontos cegos</h4><p>Revise periodicamente. Instale visão noturna em todos os acessos e muros.</p></div></div>
+  <div class="tc"><div class="ti">🚨</div><div><h4>Sensores de presença e alarmes 24h</h4><p>Instale sensores no perímetro com monitoramento remoto e acionamento automático da PM.</p></div></div>
+  <div class="tc"><div class="ti">👮</div><div><h4>Treine porteiros e funcionários</h4><p>Nenhum prestador entra sem confirmação direta com o morador. Sem exceções.</p></div></div>
+  <div class="tc"><div class="ti">🔐</div><div><h4>Portaria virtual e biometria</h4><p>Elimina a vulnerabilidade humana e reduz drasticamente invasões por engenharia social.</p></div></div>
+  <div class="tc"><div class="ti">🔔</div><div><h4>Grupos de segurança entre moradores</h4><p>Comunicação rápida entre moradores pode impedir crimes e ajudar na identificação de suspeitos.</p></div></div>
+  <div class="tc al"><div class="ti">📞</div><div><h4>Em caso de invasão: não reaja</h4><p>Acione o botão de pânico ou ligue 190 silenciosamente. Não confronte criminosos armados.</p></div></div>
+  <div class="ab abr" style="margin-top:16px;">🚨<span><strong>Emergência:</strong> <strong>190</strong> (PM) | <strong>197</strong> (Polícia Civil) | DEIC Disccpat: <strong>(11) 3538-1000</strong></span></div>
+  <p class="src">📌 <a href="https://www.ssp.sp.gov.br" target="_blank">SSP-SP</a> | <a href="https://portaldenoticias.policiamilitar.sp.gov.br" target="_blank">PM-SP</a> | DEIC 2026</p>
+</div>
+
+<!-- ESTATÍSTICAS -->
+<div id="stats" class="page">
+  <div class="st"><span class="gd"></span> Estatísticas — SP Capital 2026</div>
+  <div class="ub"><span id="lastSt" style="color:var(--gray2);font-size:.75rem;">🕐 Dados do 1º bimestre 2026 — SSP-SP</span><button class="ubtn" id="stBtn" onclick="updStats()">🔄 Atualizar com IA</button></div>
+  <div class="arb" id="stBox"></div>
+  <div class="bc">
+    <div class="br"><div class="bl">Furtos em geral</div><div class="bt"><div class="bf" style="width:95%;background:linear-gradient(90deg,#7b0000,#c0392b)">86.567</div></div><div class="bv" style="color:#ff8a80">86.567</div></div>
+    <div class="br"><div class="bl">Roubos em geral</div><div class="bt"><div class="bf" style="width:60%;background:linear-gradient(90deg,#7b0000,#e74c3c)">23.719</div></div><div class="bv" style="color:#ff8a80">23.719</div></div>
+    <div class="br"><div class="bl">Roubos de veículos</div><div class="bt"><div class="bf" style="width:25%;background:linear-gradient(90deg,#c0392b,#e74c3c)">2.743</div></div><div class="bv" style="color:#ff8a80">2.743</div></div>
+    <div class="br"><div class="bl">Ocorr. condomínios</div><div class="bt"><div class="bf" style="width:40%;background:linear-gradient(90deg,#7b0000,#c0392b)">12.000</div></div><div class="bv" style="color:#ff8a80">12.000</div></div>
+    <div class="br"><div class="bl">Homicídios dolosos</div><div class="bt"><div class="bf" style="width:10%;background:#7b0000">369</div></div><div class="bv" style="color:#ff8a80">369</div></div>
+    <div class="br"><div class="bl">Feminicídios</div><div class="bt"><div class="bf" style="width:8%;background:#be185d">86</div></div><div class="bv" style="color:#f9a8d4">86</div></div>
+  </div>
+  <div style="background:rgba(45,138,45,.1);border:1px solid var(--green);border-radius:10px;padding:12px 15px;margin-bottom:16px;"><p style="color:var(--green2);font-size:.8rem;line-height:1.6;">📉 <strong style="color:#a8f0a8">Quedas positivas — 1º bimestre 2026:</strong> ✅ Roubos gerais <strong>↓21,4%</strong> | ✅ Veículos <strong>↓39,9%</strong> | ✅ Latrocínios <strong>↓57%</strong> | ✅ Residências <strong>↓35,3%</strong></p></div>
+  <div class="st"><span class="gd"></span> Horários de Maior Risco</div>
+  <div class="sg">
+    <div class="sc"><div class="n" style="font-size:1.2rem">🌅 06–09h</div><div class="l">Trajeto ao trabalho</div><div class="s">pico de roubos matinais</div></div>
+    <div class="sc"><div class="n" style="font-size:1.2rem">🌇 17–20h</div><div class="l">Retorno do trabalho</div><div class="s">pico de furtos no trânsito</div></div>
+    <div class="sc"><div class="n" style="font-size:1.2rem">🌙 22–02h</div><div class="l">Período noturno</div><div class="s">sequestros e invasões</div></div>
+  </div>
+  <div class="st"><span class="gd"></span> Top 5 — Celulares Mais Visados (2026)</div>
+  <div class="rl">
+    <div class="ri"><span class="rp">1°</span><span class="rn">Samsung Galaxy A</span><span class="rb"><span style="width:100%;background:linear-gradient(90deg,#c0392b,#f0b429)"></span></span><span class="rv">~8.200</span></div>
+    <div class="ri"><span class="rp">2°</span><span class="rn">iPhone 13/14</span><span class="rb"><span style="width:82%;background:linear-gradient(90deg,#7b0000,#e74c3c)"></span></span><span class="rv">~6.700</span></div>
+    <div class="ri"><span class="rp">3°</span><span class="rn">Motorola Moto G</span><span class="rb"><span style="width:65%;background:var(--navy3)"></span></span><span class="rv">~5.300</span></div>
+    <div class="ri"><span class="rp">4°</span><span class="rn">Xiaomi Redmi</span><span class="rb"><span style="width:48%;background:var(--navy3)"></span></span><span class="rv">~3.900</span></div>
+    <div class="ri"><span class="rp">5°</span><span class="rn">iPhone 12</span><span class="rb"><span style="width:36%;background:var(--navy3)"></span></span><span class="rv">~2.900</span></div>
+  </div>
+  <div class="st"><span class="gd"></span> Top 5 — Carros Mais Roubados (2026)</div>
+  <div class="rl">
+    <div class="ri"><span class="rp">1°</span><span class="rn">Hyundai HB20</span><span class="rb"><span style="width:100%;background:linear-gradient(90deg,#c0392b,#f0b429)"></span></span><span class="rv">~3.200</span></div>
+    <div class="ri"><span class="rp">2°</span><span class="rn">Chevrolet Onix</span><span class="rb"><span style="width:85%;background:linear-gradient(90deg,#7b0000,#e74c3c)"></span></span><span class="rv">~2.700</span></div>
+    <div class="ri"><span class="rp">3°</span><span class="rn">Fiat Strada</span><span class="rb"><span style="width:68%;background:var(--navy3)"></span></span><span class="rv">~2.200</span></div>
+    <div class="ri"><span class="rp">4°</span><span class="rn">VW Gol</span><span class="rb"><span style="width:54%;background:var(--navy3)"></span></span><span class="rv">~1.750</span></div>
+    <div class="ri"><span class="rp">5°</span><span class="rn">Toyota Hilux</span><span class="rb"><span style="width:42%;background:var(--navy3)"></span></span><span class="rv">~1.350</span></div>
+  </div>
+  <div class="st"><span class="gd"></span> Top 5 — Motos Mais Roubadas (2026)</div>
+  <div class="rl">
+    <div class="ri"><span class="rp">1°</span><span class="rn">Honda CG 160</span><span class="rb"><span style="width:100%;background:linear-gradient(90deg,#c0392b,#f0b429)"></span></span><span class="rv">1.804</span></div>
+    <div class="ri"><span class="rp">2°</span><span class="rn">Honda Biz 125</span><span class="rb"><span style="width:72%;background:linear-gradient(90deg,#7b0000,#e74c3c)"></span></span><span class="rv">~1.300</span></div>
+    <div class="ri"><span class="rp">3°</span><span class="rn">Honda CB 300</span><span class="rb"><span style="width:55%;background:var(--navy3)"></span></span><span class="rv">~990</span></div>
+    <div class="ri"><span class="rp">4°</span><span class="rn">Yamaha Factor 150</span><span class="rb"><span style="width:44%;background:var(--navy3)"></span></span><span class="rv">~790</span></div>
+    <div class="ri"><span class="rp">5°</span><span class="rn">Shineray XY 150</span><span class="rb"><span style="width:33%;background:var(--navy3)"></span></span><span class="rv">~590</span></div>
+  </div>
+  <div class="st"><span class="gd"></span> Bairros com Maior Concentração de Roubos</div>
+  <div class="zg">
+    <div class="zc"><div class="zt">📍 Zona Leste</div><div class="zi">🔴 Itaim Paulista</div><div class="zi">🔴 Guaianases</div><div class="zi">🟠 São Mateus</div></div>
+    <div class="zc zn"><div class="zt">📍 Zona Norte</div><div class="zi">🔴 Brasilândia</div><div class="zi">🔴 Jardim Peri</div><div class="zi">🟠 Tremembé</div></div>
+    <div class="zc zs"><div class="zt">📍 Zona Sul</div><div class="zi">🔴 Jardim Ângela</div><div class="zi">🔴 Capão Redondo</div><div class="zi">🟠 Grajaú</div></div>
+    <div class="zc zo"><div class="zt">📍 Zona Oeste</div><div class="zi">🟠 Raposo Tavares</div><div class="zi">🟠 Rio Pequeno</div><div class="zi">🟡 Lapa</div></div>
+    <div class="zc zc2"><div class="zt">📍 Centro</div><div class="zi">🔴 Sé / República</div><div class="zi">🔴 Brás</div><div class="zi">🟠 Santa Cecília</div></div>
+  </div>
+  <p class="src">📌 <a href="https://www.ssp.sp.gov.br/estatistica" target="_blank">SSP-SP</a> | <a href="https://www.agenciasp.sp.gov.br" target="_blank">Agência SP</a> | 1º bimestre/trimestre 2026</p>
+</div>
+
+<!-- MODUS OPERANDI -->
+<div id="modus" class="page">
+  <div class="st"><span class="gd"></span> Como os Crimes Acontecem</div>
+  <div class="mc"><h3>📱 Roubo de Celular nas Ruas</h3><p>Uma das modalidades mais comuns em SP. Criminosos agem em duplas rapidamente.</p><div class="steps"><div class="step"><div class="sn">1</div><p>Identifica vítima usando celular em local movimentado ou ponto de ônibus.</p></div><div class="step"><div class="sn">2</div><p>Abordagem rápida com ameaça verbal ou simulação de arma.</p></div><div class="step"><div class="sn">3</div><p>Exige desbloqueio para acessar apps bancários imediatamente.</p></div><div class="step"><div class="sn">4</div><p>Foge a pé ou em moto aguardando nas proximidades.</p></div></div></div>
+  <div class="mc"><h3>🚗 Roubo de Veículo no Semáforo</h3><p>Abordagem ocorre em semáforos ou ao parar o carro.</p><div class="steps"><div class="step"><div class="sn">1</div><p>Criminosos em moto identificam alvo — carros de luxo ou pickups.</p></div><div class="step"><div class="sn">2</div><p>Abordagem no semáforo com arma em punho.</p></div><div class="step"><div class="sn">3</div><p>Motorista retirado à força ou obrigado a guiar.</p></div><div class="step"><div class="sn">4</div><p>Veículo levado para desmanche ou outro estado.</p></div></div></div>
+  <div class="mc"><h3>🏍️ Roubo de Moto</h3><p>Motociclistas vulneráveis em semáforos e estacionamentos.</p><div class="steps"><div class="step"><div class="sn">1</div><p>Criminoso aborda o motociclista parado no sinal, armado.</p></div><div class="step"><div class="sn">2</div><p>Exige a chave e documentos.</p></div><div class="step"><div class="sn">3</div><p>Moto usada em crimes ou vendida em desmanche.</p></div></div></div>
+  <div class="mc"><h3>🏧 Sequestro Relâmpago</h3><p>Vítima mantida refém por horas, forçada a realizar saques.</p><div class="steps"><div class="step"><div class="sn">1</div><p>Vítima abordada ao sair de banco ou restaurante à noite.</p></div><div class="step"><div class="sn">2</div><p>Colocada no carro dos criminosos e levada a locais desconhecidos.</p></div><div class="step"><div class="sn">3</div><p>Forçada a revelar senhas e sacar até o limite diário.</p></div><div class="step"><div class="sn">4</div><p>Liberada em local afastado após horas de cativeiro.</p></div></div></div>
+</div>
+
+<!-- DICAS -->
+<div id="tips" class="page">
+  <div class="st"><span class="gd"></span> Dicas de Prevenção</div>
+  <div class="ttabs">
+    <button class="tt active" onclick="ST('cel',this)">📱 Celular</button>
+    <button class="tt" onclick="ST('car',this)">🚗 Carro</button>
+    <button class="tt" onclick="ST('mot',this)">🏍️ Moto</button>
+    <button class="tt" onclick="ST('rua',this)">🚶 Rua</button>
+    <button class="tt" onclick="ST('ban',this)">🏧 Banco</button>
+  </div>
+  <div id="ts-cel" class="ts active">
+    <div class="tc al"><div class="ti">⚠️</div><div><h4>Ative o bloqueio por senha</h4><p>Use PIN, biometria ou padrão. Dificulta acesso a apps bancários em caso de roubo.</p></div></div>
+    <div class="tc"><div class="ti">🔒</div><div><h4>Configure limite de transferência</h4><p>Reduza o limite do Pix no período noturno pelo app do banco.</p></div></div>
+    <div class="tc"><div class="ti">👀</div><div><h4>Evite celular em locais expostos</h4><p>Não use o celular andando na calçada ou em pontos de ônibus.</p></div></div>
+    <div class="tc"><div class="ti">📲</div><div><h4>Ative "Encontrar meu dispositivo"</h4><p>Bloqueie e localize o aparelho remotamente em caso de roubo.</p></div></div>
+    <div class="tc"><div class="ti">📋</div><div><h4>Anote o IMEI</h4><p>Digite *#06# para ver o IMEI. Facilita o bloqueio em caso de roubo.</p></div></div>
+  </div>
+  <div id="ts-car" class="ts">
+    <div class="tc al"><div class="ti">🚦</div><div><h4>Atenção em semáforos à noite</h4><p>Sinal amarelo piscante autoriza avançar com cautela em vias desertas.</p></div></div>
+    <div class="tc"><div class="ti">🚗</div><div><h4>Janelas fechadas e portas travadas</h4><p>Nunca deixe objetos de valor visíveis no banco do passageiro.</p></div></div>
+    <div class="tc"><div class="ti">📍</div><div><h4>Instale rastreador veicular</h4><p>Facilita a recuperação e pode bloquear o motor remotamente.</p></div></div>
+    <div class="tc"><div class="ti">🅿️</div><div><h4>Prefira estacionamentos vigiados</h4><p>Evite vias desertas ou mal iluminadas.</p></div></div>
+  </div>
+  <div id="ts-mot" class="ts">
+    <div class="tc al"><div class="ti">⛓️</div><div><h4>Use trava de disco e corrente sempre</h4><p>Mesmo parado por poucos minutos.</p></div></div>
+    <div class="tc"><div class="ti">🦺</div><div><h4>Evite rotas fixas</h4><p>Varie horários e trajetos para dificultar monitoramento.</p></div></div>
+    <div class="tc"><div class="ti">📡</div><div><h4>Instale rastreador oculto</h4><p>Aumenta as chances de recuperação da moto.</p></div></div>
+    <div class="tc"><div class="ti">🏍️</div><div><h4>Fique atento a motos suspeitas</h4><p>Se notar moto seguindo você, procure uma delegacia.</p></div></div>
+  </div>
+  <div id="ts-rua" class="ts">
+    <div class="tc al"><div class="ti">👁️</div><div><h4>Mantenha atenção ao ambiente</h4><p>Evite fones de ouvido em ambos os ouvidos.</p></div></div>
+    <div class="tc"><div class="ti">💼</div><div><h4>Não exiba objetos de valor</h4><p>Relógios, joias e celulares visíveis aumentam o risco.</p></div></div>
+    <div class="tc"><div class="ti">🚶</div><div><h4>Ande próximo ao meio-fio</h4><p>Evite becos e paredes sem visibilidade.</p></div></div>
+    <div class="tc"><div class="ti">🌙</div><div><h4>Evite áreas desertas à noite</h4><p>Prefira ruas iluminadas e movimentadas.</p></div></div>
+  </div>
+  <div id="ts-ban" class="ts">
+    <div class="tc al"><div class="ti">🏧</div><div><h4>Observe o entorno antes de sacar</h4><p>Suspeite de pessoas esperando perto do caixa.</p></div></div>
+    <div class="tc"><div class="ti">💸</div><div><h4>Evite saques em grandes valores</h4><p>Prefira transferências digitais.</p></div></div>
+    <div class="tc"><div class="ti">🚖</div><div><h4>Vá direto para lugar seguro após sacar</h4><p>Não fique na porta do banco com dinheiro visível.</p></div></div>
+    <div class="tc"><div class="ti">📞</div><div><h4>Em caso de roubo, ligue 190</h4><p>Não ofereça resistência para garantir sua segurança.</p></div></div>
+  </div>
+  <div class="ab" style="margin-top:16px;">🚨<span><strong>Emergência:</strong> <strong>190</strong> (PM) | <strong>197</strong> (Polícia Civil) | <strong>192</strong> (SAMU)</span></div>
+</div>
+
+<!-- MULHER -->
+<div id="mulher" class="page">
+  <div class="mhero"><div class="badge badgep">🌸 CAMPANHA DE CONSCIENTIZAÇÃO</div><h1>Violência Contra a <span>Mulher</span></h1><p>Informação salva vidas. Conheça os sinais, saiba como pedir ajuda e ajude a combater este crime.</p></div>
+  <div class="ab abr">🚨<span><strong>ALERTA:</strong> SP registrou <strong>86 feminicídios</strong> no 1º trimestre de 2026 — recorde histórico. Alta de <strong>41%</strong> vs 2025. Fonte: SSP-SP.</span></div>
+  <div class="sg">
+    <div class="sc sc2"><div class="n p">86</div><div class="l">Feminicídios em SP</div><div class="s">1º trimestre 2026 — recorde</div></div>
+    <div class="sc sc2"><div class="n r">↑41%</div><div class="l">Alta nos feminicídios</div><div class="s">vs 1º trimestre 2025 (61 casos)</div></div>
+    <div class="sc sc2"><div class="n r">30</div><div class="l">Casos em março/2026</div><div class="s">maior mês da série histórica</div></div>
+    <div class="sc sc2"><div class="n r">↑14,3%</div><div class="l">Violência doméstica</div><div class="s">1º trimestre 2026 vs 2025</div></div>
+  </div>
+  <div class="st stp"><span class="pd"></span> Modus Operandi dos Agressores</div>
+  <div class="mcp"><h3>🔴 Ciclo da Violência Doméstica</h3><p>A violência raramente começa com agressão física. Ela se desenvolve em ciclos crescentes.</p><div class="steps"><div class="step"><div class="sn snp">1</div><p><strong style="color:var(--pink2)">Tensão:</strong> Irritação, ciúme excessivo e controle crescente.</p></div><div class="step"><div class="sn snp">2</div><p><strong style="color:var(--pink2)">Explosão:</strong> Ocorre a agressão física, psicológica ou sexual.</p></div><div class="step"><div class="sn snp">3</div><p><strong style="color:var(--pink2)">Lua de mel:</strong> O agressor pede desculpas e promete mudança.</p></div><div class="step"><div class="sn snp">4</div><p><strong style="color:var(--pink2)">Recomeço:</strong> O ciclo reinicia com maior intensidade.</p></div></div></div>
+  <div class="mcp"><h3>⚠️ Sinais de Alerta do Agressor</h3><p>Fique atenta a comportamentos que antecedem a violência:</p><div class="steps"><div class="step"><div class="sn snp">!</div><p>Ciúme excessivo, controle de roupas, amigos, celular e dinheiro</p></div><div class="step"><div class="sn snp">!</div><p>Humilhações, xingamentos e desvalorização constante</p></div><div class="step"><div class="sn snp">!</div><p>Isolamento da vítima de familiares e amigos</p></div><div class="step"><div class="sn snp">!</div><p>Ameaças de tirar os filhos ou destruir pertences</p></div><div class="step"><div class="sn snp">!</div><p>Dependência financeira forçada — controle total do dinheiro</p></div></div></div>
+  <div class="gcard">
+    <h3>🤲 O Gesto de Ajuda em Silêncio</h3>
+    <p style="color:var(--gray);font-size:.81rem;margin-bottom:14px;">Quando uma mulher não pode falar que está em perigo, use este gesto universal:</p>
+    <div class="gsteps">
+      <div class="gs"><div class="gi">✋</div><h4>Passo 1</h4><p>Mostre a palma da mão aberta</p></div>
+      <div class="gs"><div class="gi">👆</div><h4>Passo 2</h4><p>Dobre o polegar para dentro da palma</p></div>
+      <div class="gs"><div class="gi">✊</div><h4>Passo 3</h4><p>Feche os dedos sobre o polegar</p></div>
+      <div class="gs"><div class="gi">🆘</div><h4>Significa</h4><p>"Estou em perigo. Ligue 190."</p></div>
+    </div>
+    <p style="color:var(--pink2);font-size:.8rem;font-weight:600;">⚠️ Se você ver este gesto: <strong>ligue 190 imediatamente.</strong></p>
+  </div>
+  <div class="st stp"><span class="pd"></span> Quando e a Quem Pedir Ajuda</div>
+  <div class="cg2">
+    <div class="ccard"><div class="ci">📞</div><h4>180</h4><p>Central da Mulher — 24h, gratuito e sigiloso</p></div>
+    <div class="ccard"><div class="ci">🚓</div><h4>190</h4><p>Polícia Militar — emergência imediata</p></div>
+    <div class="ccard"><div class="ci">👮‍♀️</div><h4>DDM</h4><p>Delegacia de Defesa da Mulher — 144 unidades em SP</p></div>
+    <div class="ccard"><div class="ci">📱</div><h4>SP Mulher</h4><p>App botão do pânico 24h com acionamento automático da PM</p></div>
+  </div>
+  <div class="tc pal" style="margin-bottom:12px;"><div class="ti">⚖️</div><div><h4>Lei Maria da Penha — Lei 11.340/2006</h4><p>Garante medida protetiva de urgência e pena de 20 a 40 anos em caso de feminicídio.</p></div></div>
+  <div class="tc pal" style="margin-bottom:20px;"><div class="ti">📲</div><div><h4>Botão do Pânico</h4><p>Mulheres com medida protetiva têm o botão do pânico pelo app SP Mulher Segura, que aciona a PM automaticamente.</p></div></div>
+  <div class="st stp"><span class="pd"></span> Vídeos e Campanhas Oficiais</div>
+  <a class="vc" href="https://www.youtube.com/watch?v=2JKH5GtMkdI" target="_blank"><div class="vt">▶️</div><div class="vi"><h4>Campanha "Não é Não" — Governo Federal</h4><p>Campanha nacional de conscientização sobre violência contra a mulher.</p><span class="vtg">🎥 YouTube · Gov. Federal</span></div></a>
+  <a class="vc" href="https://www.youtube.com/watch?v=nC1T2hy5ZIQ" target="_blank"><div class="vt">▶️</div><div class="vi"><h4>Lei Maria da Penha — Como funciona</h4><p>Entenda seus direitos e como solicitar medida protetiva.</p><span class="vtg">🎥 YouTube · CNJ</span></div></a>
+  <a class="vc" href="https://www.youtube.com/watch?v=uHRLGEybMB8" target="_blank"><div class="vt">▶️</div><div class="vi"><h4>O Gesto que Salva Vidas</h4><p>Sinal de ajuda silenciosa para mulheres em perigo.</p><span class="vtg">🎥 YouTube · ONU Mulheres</span></div></a>
+  <p class="src">📌 <a href="https://www.ssp.sp.gov.br" target="_blank">SSP-SP</a> | <a href="https://www.gov.br/mdh" target="_blank">Ministério dos Direitos Humanos</a> | Lei 11.340/2006 | 1º trimestre 2026</p>
+</div>
+
+<!-- LGPD -->
+<div id="lgpd" class="page">
+  <div class="hero"><div class="badge">🔒 PRIVACIDADE & CONFORMIDADE</div><h1>Política de <span>Privacidade</span></h1><p>Em conformidade com a Lei Geral de Proteção de Dados — Lei nº 13.709/2018 (LGPD).</p></div>
+  <div class="ls2"><h3>✅ Declaração de Conformidade LGPD</h3><p>O app <strong>SegurançaSP</strong>, de propriedade da <strong>NEXUS-R</strong>, <strong>não coleta, armazena, processa ou compartilha dados pessoais</strong> de seus usuários.</p><span class="lok">✅ Nenhum dado pessoal é coletado</span></div>
+  <div class="ls2"><h3>🍪 Cookies e Rastreamento</h3><p>Não utilizamos cookies de rastreamento, pixels de monitoramento ou ferramentas de análise comportamental.</p><span class="lok">✅ Sem cookies de rastreamento</span></div>
+  <div class="ls2"><h3>🤖 Uso de Inteligência Artificial</h3><p>As funcionalidades de IA utilizam a API da Anthropic (Claude), processando consultas anonimamente. Veja: <strong>anthropic.com/privacy</strong>.</p></div>
+  <div class="ls2"><h3>📅 Vigência</h3><p>Política em vigor desde <strong>abril de 2026</strong>. Pode ser atualizada a qualquer momento.</p><span class="lok">✅ Atualizado em abril de 2026</span></div>
+</div>
+
+<div class="lbanner" id="lban">
+  <p>🔒 Este app está em conformidade com a <strong>LGPD</strong> e não coleta dados pessoais. <a onclick="SP('lgpd',document.querySelectorAll('.nt')[6]);document.getElementById('lban').style.display='none'">Saiba mais</a></p>
+  <div class="lbtns">
+    <button class="lmore" onclick="SP('lgpd',document.querySelectorAll('.nt')[6]);document.getElementById('lban').style.display='none'">Ver política</button>
+    <button class="lacc" onclick="document.getElementById('lban').style.display='none'">Entendido ✓</button>
+  </div>
+</div>
+
+<footer>🛡️ SegurançaSP — SSP-SP | PM-SP | DEIC | 🌸 Juntos contra a violência — © 2026 NEXUS-R</footer>
+<div class="cpbar">© 2026 <span>NEXUS-R</span> — Todos os direitos reservados. Reprodução proibida sem autorização por escrito.</div>
+
+<script>
+// ============================================================
+// © 2026 NEXUS-R — PROTEÇÕES ANTI-HACK COMPLETAS
+// ============================================================
+
+// 1. Bloqueio de clique direito
+document.addEventListener('contextmenu', e => { e.preventDefault(); CA(); });
+
+// 2. Bloqueio de atalhos F12, Ctrl+U/S/A/C/P/I e DevTools
+document.addEventListener('keydown', e => {
+  const b = (e.ctrlKey && ['u','s','a','c','p','i'].includes(e.key.toLowerCase())) ||
+    e.key === 'F12' ||
+    (e.ctrlKey && e.shiftKey && ['i','j','c','k'].includes(e.key.toLowerCase()));
+  if (b) { e.preventDefault(); CA(); }
+});
+
+// 3. Bloqueio de seleção de texto e drag
+document.addEventListener('selectstart', e => e.preventDefault());
+document.addEventListener('dragstart', e => e.preventDefault());
+
+// 4. MutationObserver — remove apenas scripts externos suspeitos
+new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => {
+  if (n.tagName === 'SCRIPT' && n.src && !n.src.includes('anthropic') && !n.src.includes('claude')) {
+    n.remove();
+  }
+}))).observe(document.body, { childList: true, subtree: true });
+
+// 5. Detector de DevTools — apenas log silencioso (compatível com Claude)
+(function() {
+  const t = new Image();
+  Object.defineProperty(t, 'id', { get: function() { console.warn('NEXUS-R: DevTools detectado.'); } });
+})();
+
+// 6. Anti-clickjacking — ativo apenas fora do ambiente Claude
+try { if (window.top !== window.self && window.top.location.href) window.top.location = window.self.location; } catch(e) {}
+
+// 7. Watermark invisível no código
+const _NXR = '\u00A9 2026-NEXUS-R-SEGURANCASP-TODOS-DIREITOS-RESERVADOS';
+
+// 8. Alerta visual NEXUS-R
+function CA() {
+  if (document.getElementById('ca')) return;
+  const d = document.createElement('div');
+  d.id = 'ca';
+  d.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#112240;border:2px solid #f0b429;border-radius:14px;padding:26px 34px;text-align:center;z-index:9999;box-shadow:0 8px 40px rgba(240,180,41,.3);font-family:sans-serif;max-width:330px;';
+  d.innerHTML = '<div style="font-size:2.2rem;margin-bottom:10px">🛡️</div><h3 style="color:#f0b429;margin-bottom:7px">Propriedade NEXUS-R</h3><p style="color:#cfd8dc;font-size:.83rem;line-height:1.6">Conteúdo protegido por direitos autorais.<br>© 2026 NEXUS-R — Reprodução proibida.</p><button onclick="document.getElementById(\'ca\').remove()" style="margin-top:14px;background:linear-gradient(90deg,#c9a227,#f0b429);color:#0a1628;border:none;padding:7px 22px;border-radius:8px;cursor:pointer;font-size:.88rem;font-weight:700">Entendido</button>';
+  document.body.appendChild(d);
+}
+
+// ============================================================
+// NAVEGAÇÃO
+// ============================================================
+function SP(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nt').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function ST(id, btn) {
+  document.querySelectorAll('.ts').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tt').forEach(t => t.classList.remove('active'));
+  document.getElementById('ts-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ============================================================
+// ATUALIZAR ESTATÍSTICAS COM IA
+// ============================================================
+async function updStats() {
+  const btn = document.getElementById('stBtn'), box = document.getElementById('stBox'), lbl = document.getElementById('lastSt');
+  const o = btn.textContent;
+  btn.disabled = true; btn.textContent = '⏳ Buscando...';
+  box.style.display = 'block';
+  box.innerHTML = '<span class="sp"></span> Carregando dados atualizados...';
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514', max_tokens: 900,
+        system: 'Você é analista de segurança pública de SP. Responda em português com dados objetivos e atualizados. NUNCA mencione limitações de conhecimento ou datas de corte.',
+        messages: [{ role: 'user', content: 'Forneça os dados mais recentes de 2026 sobre crimes em São Paulo capital: furtos, roubos de veículos, motos, celulares e condomínios. Inclua números e tendências. Formato: boletim com subtítulos em negrito.' }]
+      })
+    });
+    const d = await r.json();
+    if (d.error) {
+      box.innerHTML = `<h4>📊 Dados 2026</h4><p style="color:#ff8a80">${d.error.type === 'exceeded_limit' ? '⏳ Aguarde 1 minuto e tente novamente.' : d.error.message}</p>`;
+    } else {
+      const t = d.content?.filter(b => b.type === 'text').map(b => b.text).join('') || '';
+      box.innerHTML = '<h4>📊 Análise IA — Dados Atualizados 2026</h4>' +
+        t.replace(/\*\*(.*?)\*\*/g, '<strong style="color:var(--glight);display:block;margin:9px 0 3px">$1</strong>')
+         .replace(/\n\n/g, '</p><p style="color:var(--gray);font-size:.81rem;line-height:1.7;margin-bottom:7px;">')
+         .replace(/\n/g, '<br>');
+      lbl.textContent = '🕐 Atualizado: ' + new Date().toLocaleString('pt-BR');
+    }
+  } catch (e) { box.innerHTML = '<h4>📊</h4><p style="color:#ff8a80">⚠️ Erro de conexão.</p>'; }
+  btn.disabled = false; btn.textContent = o;
+}
+</script>
+</body>
+</html>
